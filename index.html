@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>openGoogle Sample</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" href="ratchet.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="content content-padded">
+
+<button class="btn btn-block" onclick="login()">Login with Google</button>
+<hr/>
+
+<button class="btn btn-block" onclick="getInfo()">Get My Info</button>
+<p>Name: <span id="userName"></span></p>
+<img id="userPic"/>
+<hr/>
+
+<textarea id="Message" placeholder="What's on your mind?" rows="5"></textarea>
+<button class="btn btn-block" onclick="share()">Share</button>
+<hr/>
+
+<p>Complete Google Logout. After logging out, you'll have to login again and provide your Google credentials.</p>
+<button class="btn btn-block" onclick="logout()">Logout</button>
+<hr/>
+
+<button class="btn btn-block" onclick="readPermissions()">Read Permissions</button>
+
+<p>Revoke App Permissions. After revoking permissions, you'll have to grant permissions again when logging in.</p>
+<button class="btn btn-block" onclick="revoke()">Revoke Permissions</button>
+
+</div>
+
+<!--cordova.js is automatically injected by the Cordova build process-->
+<script src="cordova.js"></script>
+
+<script src="openGoogle.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<script>
+
+     // Defaults to sessionStorage for storing the Google token
+     openGoogle.init({appId: '34080683908-bqaj6n87rd6tvsdvqgo3fkolrj2sshfb.apps.googleusercontent.com'});
+
+    //  Uncomment the line below to store the Google token in localStorage instead of sessionStorage
+    //  openGoogle.init({appId: 'YOUR_FB_APP_ID', tokenStore: window.localStorage});
+
+    function login() {
+        openGoogle.login(
+                function(response) {
+                    if(response.status === 'connected') {
+                        alert('Google login succeeded, got access token: ' + response.authResponse.accessToken);
+                    } else {
+                        alert('Google login failed: ' + response.error);
+                    }
+                }, {scope: 'https://www.googleapis.com/auth/userinfo.profile '+
+                           'https://www.googleapis.com/auth/userinfo.email '+
+                           'https://www.googleapis.com/auth/plus.me'});
+    }
+
+    function getInfo() {
+        openGoogle.api({
+            path: '/plus/v1/people/me',
+            success: function(data) {
+                console.log(JSON.stringify(data));
+                document.getElementById("userName").innerHTML = data.displayName;
+                document.getElementById("userPic").src = data.image.url;
+            },
+            error: errorHandler});
+    }
+
+    function share() {
+        // openGoogle.api({
+        //     method: 'POST',
+        //     path: 'share?url=http://github.com/minasvisual',
+        //     params: {
+        //         message: document.getElementById('Message').value || 'Testing Google APIs'
+        //     },
+        //     success: function() {
+        //         alert('the item was posted on Google');
+        //     },
+        //     error: errorHandler});
+        gapi.plus.render(
+            document.getElementById('Message'),
+            {"width": "300", "theme": "light"}
+        )
+    }
+
+    function readPermissions() {
+        openGoogle.api({
+            method: 'GET',
+            path: '/?',
+            success: function(result) {
+                alert(JSON.stringify(result.data));
+            },
+            error: errorHandler
+        });
+    }
+
+    function revoke() {
+        openGoogle.revokePermissions(
+                function() {
+                    alert('Permissions revoked');
+                },
+                errorHandler);
+    }
+
+    function logout() {
+        openGoogle.logout(
+                function() {
+                    alert('Logout successful');
+                },
+                errorHandler);
+    }
+
+    function errorHandler(error) {
+        alert(error.message);
+    }
+
+</script>
+</body>
+</html>
