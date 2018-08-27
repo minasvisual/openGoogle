@@ -1,4 +1,5 @@
-# OpenGoogle (Based on openGoogle by https://github.com/ccoenraets/openGoogle)
+# OpenGoogle 
+(Based from openFB by https://github.com/ccoenraets/openFB)
 
 openGoogle is a Micro-Library for Google integration in JavaScript apps running in the browser and in Cordova.
 
