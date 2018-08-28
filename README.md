@@ -103,6 +103,14 @@ indexng.html provides an AngularJS sample.
 
 Check out the [Ionic Tutorial](https://ccoenraets.github.io/ionic-tutorial/) for a complete example.
 
+## Angular 2-6
+
+1. Open angular.json file, put on Scripts block the path of your openGoogle.js
+2. put in the same file your oauthcallback.html on block assets and save
+3. On typings.d.ts, put the code and save: 
+```
+declare var openGoogle: any;
+```
 ## Summary
 
 The Google Plugin is still the best technical solution to integrate your Cordova app with Google because it provides a tighter integration (using native dialogs, etc). However, if you are looking for a lightweight and easy-to-set-up solution with no dependencies, or if you are targeting mobile platforms for which an implementation of the plugin is not available, you may find this library useful as well.
